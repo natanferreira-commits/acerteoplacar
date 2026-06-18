@@ -345,7 +345,7 @@
   </section>
 
   <!-- ===== SEÇÃO 3: GARANTA A VAGA (casa + comprovação + dados) ===== -->
-  <section id="vaga" style="background:linear-gradient(180deg, rgba(255,212,0,.03), transparent 30%)">
+  <section id="vaga" style="display:none; background:linear-gradient(180deg, rgba(255,212,0,.03), transparent 30%)">
     <div class="sec-tag">Garanta sua vaga</div>
     <h2 class="sec-title">Cadastre e <span class="y">comprove</span></h2>
     <p class="sec-sub">Para valer, seu palpite precisa de uma conta criada pelo nosso link. Escolha a casa, cadastre-se e envie o print do e-mail de boas-vindas.</p>
@@ -529,7 +529,7 @@ function finishStep1(){
     return;
   }
   const vaga = document.getElementById('vaga');
-  vaga.classList.add('show');
+  vaga.style.display = 'block';
   vaga.scrollIntoView({behavior:'smooth'});
 }
 
