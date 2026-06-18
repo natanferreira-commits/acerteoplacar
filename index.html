@@ -106,7 +106,8 @@
   }
   .sb-row{display:flex;align-items:stretch;justify-content:center;gap:6px}
   .sb-team{flex:1;text-align:center}
-  .sb-flag{font-size:24px;line-height:1}
+  .sb-flag{display:flex;justify-content:center;align-items:center;height:24px;line-height:1}
+  .sb-flag svg{display:block;box-shadow:0 1px 3px rgba(0,0,0,.5)}
   .sb-name{font-weight:800;font-size:13px;letter-spacing:1px;margin-top:2px;text-transform:uppercase}
   .sb-x{display:flex;align-items:center;color:#555;font-family:'Anton';font-size:26px;padding-top:30px}
   .led-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px}
@@ -277,7 +278,17 @@
       <div class="sb-head">Acerte o Placar</div>
       <div class="sb-row">
         <div class="sb-team">
-          <div class="sb-flag">🇧🇷</div>
+          <div class="sb-flag">
+            <svg viewBox="0 0 28 20" width="34" height="24" aria-label="Bandeira do Brasil" role="img">
+              <defs><clipPath id="flagBR"><rect width="28" height="20" rx="3"/></clipPath></defs>
+              <g clip-path="url(#flagBR)">
+                <rect width="28" height="20" fill="#009C3B"/>
+                <polygon points="14,2.5 25,10 14,17.5 3,10" fill="#FFDF00"/>
+                <circle cx="14" cy="10" r="4" fill="#002776"/>
+                <path d="M10.3 9 Q14 7.7 17.7 9.3" stroke="#fff" stroke-width="0.9" fill="none"/>
+              </g>
+            </svg>
+          </div>
           <div class="sb-name">Brasil</div>
           <div class="led-wrap">
             <div class="led" id="ledBR">0</div>
@@ -289,7 +300,17 @@
         </div>
         <div class="sb-x">×</div>
         <div class="sb-team">
-          <div class="sb-flag">🇭🇹</div>
+          <div class="sb-flag">
+            <svg viewBox="0 0 28 20" width="34" height="24" aria-label="Bandeira do Haiti" role="img">
+              <defs><clipPath id="flagHT"><rect width="28" height="20" rx="3"/></clipPath></defs>
+              <g clip-path="url(#flagHT)">
+                <rect width="28" height="10" fill="#00209F"/>
+                <rect y="10" width="28" height="10" fill="#D21034"/>
+                <rect x="9.5" y="6.5" width="9" height="7" fill="#fff"/>
+                <rect x="13.6" y="7.2" width="0.8" height="5.6" fill="#0A7D2C"/>
+              </g>
+            </svg>
+          </div>
           <div class="sb-name">Haiti</div>
           <div class="led-wrap">
             <div class="led" id="ledHT">0</div>
