@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Placar Certo — Brasil x Haiti | Acerte e leve R$500 no Pix</title>
+<meta name="description" content="Acerte o placar e o primeiro a marcar em Brasil x Haiti e leve R$500 no Pix. Cadastre-se na casa e palpite agora." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070707;
+    --panel:#141414;
+    --panel2:#1c1c1c;
+    --line:#2a2a2a;
+    --yellow:#FFD400;
+    --yellow-bright:#FFE600;
+    --green:#00E36B;
+    --brz-green:#009C3B;
+    --led:#3dff72;
+    --txt:#f5f5f5;
+    --muted:#9a9a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--txt);
+    background-color:var(--bg);
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,212,0,.025) 0 2px, transparent 2px 26px),
+      repeating-linear-gradient(-45deg, rgba(255,212,0,.025) 0 2px, transparent 2px 26px);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .shell{
+    max-width:480px;
+    margin:0 auto;
+    background:var(--bg);
+    min-height:100vh;
+    box-shadow:0 0 80px rgba(0,0,0,.8);
+    position:relative;
+    overflow:hidden;
+    padding-bottom:88px; /* espaço pro CTA fixo */
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;line-height:0}
+  .hero img{width:100%;display:block}
+  .hero-cta{
+    padding:18px 20px 6px;
+    text-align:center;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--bg) 16%);
+    margin-top:-60px;
+    position:relative;
+    z-index:2;
+  }
+  .prize-line{
+    font-size:15px;line-height:1.4;color:#fff;font-weight:600;margin-bottom:14px;
+  }
+  .prize-line b{color:var(--yellow-bright)}
+  .prize-pill{
+    display:inline-block;background:var(--green);color:#062b16;font-weight:800;
+    padding:5px 14px;border-radius:999px;font-size:13px;letter-spacing:.3px;margin-bottom:14px;
+    text-transform:uppercase;
+  }
+
+  /* ---------- BOTÕES ---------- */
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;border-radius:14px;
+    font-family:'Inter',sans-serif;font-weight:800;font-size:17px;letter-spacing:.3px;
+    padding:16px;text-transform:uppercase;transition:transform .08s ease, filter .15s ease;
+    text-decoration:none;text-align:center;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn-primary{background:var(--yellow);color:#1a1500;box-shadow:0 6px 0 #b89800}
+  .btn-primary:active{box-shadow:0 2px 0 #b89800;transform:translateY(3px)}
+  .btn-green{background:var(--green);color:#062b16;box-shadow:0 6px 0 #009a47}
+  .btn-green:active{box-shadow:0 2px 0 #009a47;transform:translateY(3px)}
+  .btn-ghost{background:transparent;color:var(--yellow);border:2px solid var(--line)}
+
+  /* ---------- COMO FUNCIONA ---------- */
+  .steps{display:flex;gap:8px;padding:22px 16px 6px}
+  .step{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center}
+  .step .n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--yellow);color:#1a1500;font-weight:800;font-size:14px;margin-bottom:8px}
+  .step h4{font-size:13px;font-weight:700;margin-bottom:3px}
+  .step p{font-size:11px;color:var(--muted);line-height:1.35}
+
+  /* ---------- SEÇÕES ---------- */
+  section{padding:26px 18px}
+  .sec-tag{color:var(--green);font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+  .sec-title{font-family:'Anton',sans-serif;font-size:30px;line-height:1;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+  .sec-title .y{color:var(--yellow)}
+  .sec-sub{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.45}
+
+  /* ---------- PAINEL DE PLACAR ---------- */
+  .scoreboard{
+    background:linear-gradient(180deg,#1f1f1f,#0e0e0e);
+    border:1px solid #333;border-radius:18px;padding:14px 12px 18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 10px 30px rgba(0,0,0,.5);
+  }
+  .sb-head{
+    text-align:center;color:var(--yellow);font-family:'Share Tech Mono',monospace;
+    font-size:13px;letter-spacing:3px;border-bottom:1px dashed #3a3a3a;padding-bottom:8px;margin-bottom:14px;text-transform:uppercase;
+  }
+  .sb-row{display:flex;align-items:stretch;justify-content:center;gap:6px}
+  .sb-team{flex:1;text-align:center}
+  .sb-flag{font-size:24px;line-height:1}
+  .sb-name{font-weight:800;font-size:13px;letter-spacing:1px;margin-top:2px;text-transform:uppercase}
+  .sb-x{display:flex;align-items:center;color:#555;font-family:'Anton';font-size:26px;padding-top:30px}
+  .led-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px}
+  .led{
+    background:#050805;border:1px solid #143a1d;border-radius:10px;
+    width:74px;height:84px;display:flex;align-items:center;justify-content:center;
+    font-family:'Share Tech Mono',monospace;font-size:54px;color:var(--led);
+    text-shadow:0 0 8px rgba(61,255,114,.7),0 0 22px rgba(61,255,114,.35);
+    box-shadow:inset 0 0 18px rgba(0,40,15,.9);
+  }
+  .stepper{display:flex;gap:6px}
+  .stepper button{
+    width:40px;height:34px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--yellow);font-size:20px;font-weight:800;cursor:pointer;line-height:1;
+  }
+  .stepper button:active{background:#262626}
+  .sb-meta{text-align:center;font-family:'Share Tech Mono',monospace;color:#7a7a7a;font-size:11px;letter-spacing:1px;margin-top:16px;border-top:1px dashed #3a3a3a;padding-top:10px}
+
+  /* ---------- MARCADOR ---------- */
+  .scorer-block{margin-top:26px}
+  .scorer-label{font-weight:800;font-size:16px;margin-bottom:4px}
+  .scorer-hint{color:var(--muted);font-size:12px;margin-bottom:12px}
+  .search{
+    width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    color:#fff;padding:13px 14px;font-size:15px;margin-bottom:12px;font-family:inherit;
+  }
+  .search::placeholder{color:#666}
+  .players{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .player{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:13px 12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:9px;
+    transition:.12s;text-align:left;
+  }
+  .player:hover{border-color:#3a3a3a}
+  .player .av{width:26px;height:26px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--yellow);font-weight:800;flex:0 0 auto}
+  .player.sel{background:rgba(255,212,0,.12);border-color:var(--yellow);color:#fff}
+  .player.sel .av{background:var(--yellow);color:#1a1500}
+  .player.hidden{display:none}
+  .other-input{margin-top:10px;display:none}
+  .other-input.show{display:block}
+
+  /* ---------- CASAS ---------- */
+  .casas{display:flex;flex-direction:column;gap:10px}
+  .casa{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:.12s;cursor:pointer;
+  }
+  .casa.sel{border-color:var(--green);background:rgba(0,227,107,.08)}
+  .casa-info{display:flex;align-items:center;gap:12px}
+  .casa-logo{width:42px;height:42px;border-radius:10px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--yellow);font-size:14px}
+  .casa-name{font-weight:700;font-size:15px}
+  .casa-name small{display:block;color:var(--muted);font-weight:500;font-size:11px;margin-top:1px}
+  .casa-go{background:var(--green);color:#062b16;font-weight:800;font-size:12px;padding:8px 12px;border-radius:9px;text-transform:uppercase;white-space:nowrap}
+
+  /* ---------- FORM FINAL ---------- */
+  .field{margin-bottom:14px}
+  .field label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+  .field input[type=text],.field input[type=tel]{
+    width:100%;background:var(--panel);border:1px solid var(--line);border-radius:12px;color:#fff;padding:13px 14px;font-size:15px;font-family:inherit;
+  }
+  .upload{
+    border:2px dashed #3a3a3a;border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;background:var(--panel);transition:.12s;
+  }
+  .upload.has{border-color:var(--green);background:rgba(0,227,107,.06)}
+  .upload .ic{font-size:26px;margin-bottom:6px}
+  .upload p{font-size:13px;color:var(--muted)}
+  .upload p b{color:var(--yellow)}
+  .upload input{display:none}
+  .check{display:flex;gap:10px;align-items:flex-start;margin:16px 0;font-size:12px;color:var(--muted);line-height:1.45}
+  .check input{margin-top:2px;width:18px;height:18px;accent-color:var(--green);flex:0 0 auto}
+  .check a{color:var(--yellow)}
+
+  .callout{background:rgba(255,212,0,.08);border:1px solid rgba(255,212,0,.25);border-radius:12px;padding:13px 14px;font-size:12.5px;line-height:1.5;color:#e8e3c8;margin-bottom:18px}
+  .callout b{color:var(--yellow-bright)}
+
+  /* ---------- FAQ ---------- */
+  .faq details{border-bottom:1px solid var(--line);padding:14px 2px}
+  .faq summary{font-weight:700;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:'+';color:var(--yellow);font-size:20px;line-height:1}
+  .faq details[open] summary::after{content:'–'}
+  .faq p{color:var(--muted);font-size:13px;line-height:1.5;margin-top:8px}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:26px 18px 30px;text-align:center;border-top:1px solid var(--line);margin-top:10px}
+  .age{display:inline-block;border:2px solid #444;border-radius:50%;width:40px;height:40px;line-height:36px;font-weight:800;color:#bbb;margin-bottom:10px}
+  footer p{color:#666;font-size:11px;line-height:1.6}
+
+  /* ---------- CTA FIXO ---------- */
+  .sticky{
+    position:fixed;bottom:0;left:0;right:0;z-index:30;
+    max-width:480px;margin:0 auto;padding:12px 14px;
+    background:linear-gradient(180deg, rgba(7,7,7,0), #070707 38%);
+    backdrop-filter:blur(2px);
+  }
+
+  /* ---------- CONFIRMAÇÃO ---------- */
+  .confirm{display:none;text-align:center;padding:50px 22px}
+  .confirm.show{display:block}
+  .confirm .big{font-size:54px;margin-bottom:8px}
+  .confirm h2{font-family:'Anton';font-size:30px;text-transform:uppercase;margin-bottom:8px}
+  .confirm h2 .y{color:var(--yellow)}
+  .confirm .summary{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:18px 0;text-align:left;font-size:14px}
+  .confirm .summary div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #2a2a2a}
+  .confirm .summary div:last-child{border:none}
+  .confirm .summary span{color:var(--muted)}
+  .confirm .summary b{color:#fff;text-align:right}
+
+  @media(min-width:481px){
+    body{padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="shell" id="top">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <img src="placarcerto.png" alt="Placar Certo — Brasil x Haiti, 19/06 21:30" />
+  </div>
+  <div class="hero-cta">
+    <span class="prize-pill">🏆 R$500 no Pix</span>
+    <p class="prize-line">Acerte o <b>placar exato</b> e o <b>1º a marcar</b> em Brasil x Haiti e leve <b>R$500 no Pix</b>.</p>
+    <a href="#palpite" class="btn btn-primary">Quero palpitar</a>
+  </div>
+
+  <!-- ===== COMO FUNCIONA ===== -->
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h4>Cadastre-se</h4><p>Crie sua conta na casa pelo nosso link</p></div>
+    <div class="step"><div class="n">2</div><h4>Palpite</h4><p>Crave o placar e o 1º marcador</p></div>
+    <div class="step"><div class="n">3</div><h4>Comprove</h4><p>Envie o print do e-mail de boas-vindas</p></div>
+  </div>
+
+  <!-- ===== SEÇÃO 2: PALPITE (placar + marcador) ===== -->
+  <section id="palpite">
+    <div class="sec-tag">Seu palpite</div>
+    <h2 class="sec-title">Crave o <span class="y">placar</span></h2>
+    <p class="sec-sub">Quanto antes você enviar, melhor: em caso de empate de acertadores, vence quem palpitou primeiro.</p>
+
+    <!-- Painel de placar -->
+    <div class="scoreboard">
+      <div class="sb-head">Acerte o Placar</div>
+      <div class="sb-row">
+        <div class="sb-team">
+          <div class="sb-flag">🇧🇷</div>
+          <div class="sb-name">Brasil</div>
+          <div class="led-wrap">
+            <div class="led" id="ledBR">0</div>
+            <div class="stepper">
+              <button type="button" onclick="bump('BR',-1)">−</button>
+              <button type="button" onclick="bump('BR',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="sb-x">×</div>
+        <div class="sb-team">
+          <div class="sb-flag">🇭🇹</div>
+          <div class="sb-name">Haiti</div>
+          <div class="led-wrap">
+            <div class="led" id="ledHT">0</div>
+            <div class="stepper">
+              <button type="button" onclick="bump('HT',-1)">−</button>
+              <button type="button" onclick="bump('HT',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sb-meta">DATA: 19/06/2026 &nbsp;|&nbsp; HORA: 21:30</div>
+    </div>
+
+    <!-- Marcador -->
+    <div class="scorer-block">
+      <div class="scorer-label">⚽ Quem marca o 1º gol?</div>
+      <div class="scorer-hint">Toque no jogador. Não achou? Use "Outro".</div>
+      <input class="search" id="search" type="text" placeholder="Buscar jogador…" oninput="filterPlayers()" autocomplete="off" />
+      <div class="players" id="players"></div>
+      <div class="other-input" id="otherBox">
+        <input class="search" id="otherName" type="text" placeholder="Nome do jogador" style="margin:0" oninput="document.getElementById('otherChip').textContent='Outro: '+(this.value||'—')" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEÇÃO 3: GARANTA A VAGA (casa + comprovação + dados) ===== -->
+  <section id="vaga" style="background:linear-gradient(180deg, rgba(255,212,0,.03), transparent 30%)">
+    <div class="sec-tag">Garanta sua vaga</div>
+    <h2 class="sec-title">Cadastre e <span class="y">comprove</span></h2>
+    <p class="sec-sub">Para valer, seu palpite precisa de uma conta criada pelo nosso link. Escolha a casa, cadastre-se e envie o print do e-mail de boas-vindas.</p>
+
+    <div class="callout">⚠️ <b>Só vale com cadastro novo pelo link abaixo.</b> Sem o print do e-mail de boas-vindas o palpite não entra no sorteio do prêmio.</div>
+
+    <!-- Casas (links de afiliado do Rayo) -->
+    <div class="casas" id="casas"></div>
+
+    <!-- Upload -->
+    <div class="field" style="margin-top:22px">
+      <label>📩 Print do e-mail de boas-vindas</label>
+      <label class="upload" id="uploadBox">
+        <div class="ic">⬆️</div>
+        <p id="uploadTxt"><b>Toque para enviar</b><br>JPG, PNG ou PDF (até 5MB)</p>
+        <input type="file" id="file" accept="image/*,application/pdf" onchange="onFile(this)" />
+      </label>
+    </div>
+
+    <!-- Dados -->
+    <div class="field">
+      <label>Nome completo</label>
+      <input type="text" id="nome" placeholder="Seu nome" />
+    </div>
+    <div class="field">
+      <label>WhatsApp (com DDD)</label>
+      <input type="tel" id="whats" placeholder="(00) 00000-0000" oninput="maskPhone(this)" maxlength="16" />
+    </div>
+
+    <div class="check">
+      <input type="checkbox" id="aceite" />
+      <label for="aceite" style="font-weight:500;margin:0">Sou maior de 18 anos e aceito o <a href="#regras">regulamento</a> e o uso dos meus dados para contato sobre a promoção.</label>
+    </div>
+
+    <button class="btn btn-green" id="submitBtn" onclick="submitPalpite()">Enviar meu palpite</button>
+  </section>
+
+  <!-- ===== REGRAS / FAQ ===== -->
+  <section id="regras" class="faq">
+    <div class="sec-tag">Tira-dúvidas</div>
+    <h2 class="sec-title">Como <span class="y">funciona</span></h2>
+    <p class="sec-sub"></p>
+    <details><summary>Como eu ganho os R$500?</summary><p>Acertando o <b>placar exato</b> (ex: 3 a 1) <b>e</b> o <b>primeiro jogador a marcar</b> no jogo. Entre todos que acertarem os dois e tiverem cadastro comprovado, vence quem enviou o palpite primeiro.</p></details>
+    <details><summary>Preciso mesmo me cadastrar na casa?</summary><p>Sim. A participação é exclusiva para quem cria uma conta nova pelo nosso link e envia o print do e-mail de boas-vindas. É o que garante sua vaga.</p></details>
+    <details><summary>Até quando posso palpitar?</summary><p>Até o apito inicial de Brasil x Haiti (19/06, 21:30). Depois disso os palpites são encerrados.</p></details>
+    <details><summary>E se o jogo terminar 0 a 0?</summary><p>Sem gols, não há "1º marcador". Nesse caso o critério de premiação segue o regulamento. <em>(definir)</em></p></details>
+    <details><summary>Como recebo o prêmio?</summary><p>Via Pix, no contato de WhatsApp informado, após a conferência do resultado e da comprovação.</p></details>
+  </section>
+
+  <!-- ===== CONFIRMAÇÃO (aparece após enviar) ===== -->
+  <div class="confirm" id="confirm">
+    <div class="big">✅</div>
+    <h2>Palpite <span class="y">registrado!</span></h2>
+    <p style="color:var(--muted);font-size:14px">Boa sorte! Se você cravar, a gente chama no seu WhatsApp.</p>
+    <div class="summary" id="confirmSummary"></div>
+    <p style="color:var(--muted);font-size:12px">Guarde o print do e-mail de boas-vindas — pode ser pedido na conferência.</p>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="age">+18</div>
+    <p><b>Jogue com responsabilidade.</b> Promoção válida apenas para maiores de 18 anos.<br>Placar Certo · com o Rayo — Arena/Dupla. Aposta não é investimento.</p>
+  </footer>
+
+  <!-- ===== CTA FIXO ===== -->
+  <div class="sticky" id="sticky">
+    <a href="#vaga" class="btn btn-green">Palpitar e concorrer aos R$500</a>
+  </div>
+
+</div>
+
+<script>
+/* ===================================================================
+   CONFIG EDITÁVEL — Natan ajusta aqui sem mexer no resto
+   =================================================================== */
+
+// Elenco do Brasil (prováveis marcadores). Edite à vontade.
+const PLAYERS = [
+  "Vinícius Júnior","Rodrygo","Raphinha","Endrick","Estêvão","Neymar Jr",
+  "Gabriel Martinelli","Savinho","João Pedro","Matheus Cunha","Richarlison","Pedro",
+  "Igor Jesus","Lucas Paquetá","Bruno Guimarães","Gerson","Marquinhos","Gabriel Magalhães"
+];
+
+// Casas parceiras — TROCAR pelos links de afiliado REAIS do Rayo.
+const CASAS = [
+  { nome:"Casa 1", bonus:"Bônus de boas-vindas", sigla:"C1", url:"#" },
+  { nome:"Casa 2", bonus:"Bônus de boas-vindas", sigla:"C2", url:"#" },
+  { nome:"Casa 3", bonus:"Bônus de boas-vindas", sigla:"C3", url:"#" },
+];
+
+/* =================================================================== */
+
+let placar = { BR:0, HT:0 };
+let scorer = null;
+let casaSel = null;
+let fileSel = null;
+
+// --- Placar ---
+function bump(t, d){
+  placar[t] = Math.max(0, Math.min(20, placar[t]+d));
+  document.getElementById(t==='BR'?'ledBR':'ledHT').textContent = placar[t];
+}
+
+// --- Jogadores ---
+const playersEl = document.getElementById('players');
+PLAYERS.forEach((p,i)=>{
+  const initials = p.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const el = document.createElement('button');
+  el.type='button'; el.className='player'; el.dataset.name=p.toLowerCase();
+  el.innerHTML = `<span class="av">${initials}</span><span>${p}</span>`;
+  el.onclick = ()=>selectPlayer(p, el);
+  playersEl.appendChild(el);
+});
+// chip "Outro"
+const otherEl = document.createElement('button');
+otherEl.type='button'; otherEl.className='player'; otherEl.id='otherChip'; otherEl.dataset.name='outro';
+otherEl.innerHTML = `<span class="av">+</span><span>Outro jogador</span>`;
+otherEl.onclick = ()=>{
+  document.querySelectorAll('.player').forEach(p=>p.classList.remove('sel'));
+  otherEl.classList.add('sel');
+  document.getElementById('otherBox').classList.add('show');
+  scorer = '__OTHER__';
+  document.getElementById('otherName').focus();
+};
+playersEl.appendChild(otherEl);
+
+function selectPlayer(name, el){
+  document.querySelectorAll('.player').forEach(p=>p.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('otherBox').classList.remove('show');
+  scorer = name;
+}
+function filterPlayers(){
+  const q = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.player').forEach(el=>{
+    if(el.id==='otherChip') return;
+    el.classList.toggle('hidden', !el.dataset.name.includes(q));
+  });
+}
+
+// --- Casas ---
+const casasEl = document.getElementById('casas');
+CASAS.forEach((c,i)=>{
+  const el = document.createElement('div');
+  el.className='casa';
+  el.innerHTML = `
+    <div class="casa-info">
+      <div class="casa-logo">${c.sigla}</div>
+      <div><div class="casa-name">${c.nome}<small>${c.bonus}</small></div></div>
+    </div>
+    <span class="casa-go">Cadastrar →</span>`;
+  el.onclick = ()=>{
+    document.querySelectorAll('.casa').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel');
+    casaSel = c.nome;
+    if(c.url && c.url!=='#') window.open(c.url,'_blank');
+  };
+  casasEl.appendChild(el);
+});
+
+// --- Upload ---
+function onFile(input){
+  if(input.files && input.files[0]){
+    fileSel = input.files[0];
+    document.getElementById('uploadBox').classList.add('has');
+    document.getElementById('uploadTxt').innerHTML = `<b>✓ ${fileSel.name}</b><br>Toque para trocar`;
+  }
+}
+
+// --- Máscara telefone ---
+function maskPhone(el){
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>6) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else if(v.length>2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if(v.length>0) v = `(${v}`;
+  el.value = v;
+}
+
+// --- Envio ---
+function submitPalpite(){
+  const nome = document.getElementById('nome').value.trim();
+  const whats = document.getElementById('whats').value.trim();
+  const aceite = document.getElementById('aceite').checked;
+  let scorerName = scorer;
+  if(scorer==='__OTHER__') scorerName = document.getElementById('otherName').value.trim();
+
+  // validação simples
+  if(!scorerName){ alert('Escolha quem marca o 1º gol.'); document.getElementById('palpite').scrollIntoView(); return; }
+  if(!casaSel){ alert('Escolha uma casa e faça seu cadastro.'); return; }
+  if(!fileSel){ alert('Envie o print do e-mail de boas-vindas.'); return; }
+  if(!nome){ alert('Preencha seu nome.'); return; }
+  if(whats.replace(/\D/g,'').length<10){ alert('Preencha um WhatsApp válido.'); return; }
+  if(!aceite){ alert('É preciso aceitar o regulamento e confirmar +18.'); return; }
+
+  const payload = {
+    nome, whatsapp:whats, casa:casaSel,
+    placar:`${placar.BR} x ${placar.HT}`,
+    primeiro_marcador:scorerName,
+    arquivo:fileSel.name,
+    // ATENÇÃO: o timestamp que vale é o do SERVIDOR (decide o vencedor).
+    // Aqui é só ilustrativo. No back-end (Next route/Supabase) gravar created_at do servidor.
+    enviado_em_cliente:new Date().toLocaleString('pt-BR')
+  };
+  console.log('PALPITE (enviar ao back-end):', payload);
+
+  /* TODO BACK-END:
+     fetch('/api/palpite', { method:'POST', body: FormData(...) })
+     - gravar created_at no servidor
+     - subir o print pro storage (bucket)
+     - retornar ok
+  */
+
+  // Tela de confirmação
+  const s = document.getElementById('confirmSummary');
+  s.innerHTML = `
+    <div><span>Placar</span><b>Brasil ${placar.BR} x ${placar.HT} Haiti</b></div>
+    <div><span>1º a marcar</span><b>${scorerName}</b></div>
+    <div><span>Casa</span><b>${casaSel}</b></div>
+    <div><span>Enviado</span><b>${payload.enviado_em_cliente}</b></div>`;
+  document.querySelectorAll('.shell > section, .hero, .hero-cta, .steps, footer, .faq').forEach(e=>e.style.display='none');
+  document.getElementById('confirm').classList.add('show');
+  document.getElementById('sticky').style.display='none';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
