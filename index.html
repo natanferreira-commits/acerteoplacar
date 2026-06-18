@@ -47,7 +47,13 @@
 
   /* ---------- HERO ---------- */
   .hero{position:relative;line-height:0}
-  .hero img{width:100%;display:block}
+  .hero{background:#0c0c0c}
+  /* width/height nos atributos reservam a proporção (sem colapso); height:auto evita esticar */
+  .hero img{width:100%;height:auto;display:block;background:#0c0c0c}
+  /* se a imagem falhar, mostra um placeholder com a marca (herói nunca fica vazio) */
+  .hero.hero-fallback{min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;background:radial-gradient(circle at 50% 35%, #1a1a1a, #070707)}
+  .hero.hero-fallback::before{content:"HOJE TEM";color:#fff;font-weight:700;letter-spacing:3px;font-size:14px;margin-bottom:6px}
+  .hero.hero-fallback::after{content:"PLACAR CERTO";font-family:'Anton',sans-serif;color:var(--yellow);font-size:46px;line-height:1;text-transform:uppercase}
   .hero-cta{
     padding:18px 20px 6px;
     text-align:center;
@@ -252,7 +258,9 @@
 
   <!-- ===== HERO ===== -->
   <div class="hero">
-    <img src="img/palacarar.webp" alt="Placar Certo — Acerte o placar exato de Brasil x Haiti, 19/06 21:30, valendo até R$500" />
+    <img src="img/palacarar.webp" width="1080" height="1920" loading="eager" decoding="async"
+         alt="Placar Certo — Acerte o placar exato de Brasil x Haiti, 19/06 21:30, valendo até R$500"
+         onerror="this.onerror=null;this.style.display='none';this.parentNode.classList.add('hero-fallback');" />
   </div>
   <div class="hero-cta">
     <span class="prize-pill">🏆 R$500 no Pix</span>
@@ -468,7 +476,7 @@ const CASAS = [
 // URL do Apps Script que grava os leads na planilha Google.
 // Cole aqui a URL do "deploy" do Web App (ver SETUP-PLANILHA.md). Enquanto for "",
 // o envio só mostra a confirmação (modo demo, não grava).
-const SCRIPT_URL = "";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYwAZ3nBqkhHYYMEncL2QJ3BTMWAE1Rb-ADzGKhuhYoKfEyU35ABhlq7pBcC3Eu5HoEg/exec";
 
 /* =================================================================== */
 
