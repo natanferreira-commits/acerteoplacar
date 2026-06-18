@@ -270,12 +270,6 @@
     <a href="#palpite" class="btn btn-primary">Quero palpitar</a>
   </div>
 
-  <!-- ===== COMO FUNCIONA ===== -->
-  <div class="steps">
-    <div class="step"><div class="n">1</div><h4>Cadastre-se</h4><p>Crie sua conta na casa pelo nosso link</p></div>
-    <div class="step"><div class="n">2</div><h4>Palpite</h4><p>Crave o placar e o 1º marcador</p></div>
-    <div class="step"><div class="n">3</div><h4>Comprove</h4><p>Envie o print do e-mail de boas-vindas</p></div>
-  </div>
 
   <!-- ===== SEÇÃO 2: PALPITE (placar + marcador) ===== -->
   <section id="palpite">
@@ -564,7 +558,7 @@ function filterPlayers(){
 
 // --- Paginação: página 1 (palpite) -> página 2 (cadastro) ---
 // elementos que compõem a "página 1" (somem ao avançar pro cadastro)
-const PAGE1 = '.hero, .hero-cta, .steps, #palpite, #regras, footer';
+const PAGE1 = '.hero, .hero-cta, #palpite, #regras, footer';
 
 function finishStep1(){
   let scorerName = scorer;
