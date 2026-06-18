@@ -487,6 +487,7 @@ let placar = { BR:0, HT:0 };
 let scorer = null;
 let casaSel = null;
 let fileSel = null;
+let currentPage = 1;
 
 // --- Placar ---
 function bump(t, d){
@@ -570,17 +571,36 @@ function finishStep1(){
   }
   // vai pra "página 2": esconde a página 1 inteira e mostra só o cadastro
   document.querySelectorAll(PAGE1).forEach(e=>e.style.display='none');
-  document.getElementById('sticky').style.display='none';
   document.getElementById('vaga').style.display='block';
+  currentPage = 2;
+  updateSticky();
   window.scrollTo(0,0);
 }
 
 function voltarPalpite(){
   document.getElementById('vaga').style.display='none';
   document.querySelectorAll(PAGE1).forEach(e=>e.style.display='');
-  document.getElementById('sticky').style.display='';
+  currentPage = 1;
   document.getElementById('palpite').scrollIntoView();
+  updateSticky();
 }
+
+// --- CTA fixo (verde): só aparece quando o botão amarelo do herói some da tela.
+//     Regra: nunca pode haver 2 botões ao mesmo tempo. ---
+const heroBtn = document.querySelector('.hero-cta .btn-primary');
+const stickyEl = document.getElementById('sticky');
+function updateSticky(){
+  if(currentPage !== 1 || !heroBtn){ stickyEl.style.display = 'none'; return; }
+  const r = heroBtn.getBoundingClientRect();
+  const naTela = heroBtn.offsetParent !== null && r.bottom > 0 && r.top < window.innerHeight;
+  stickyEl.style.display = naTela ? 'none' : 'block'; // amarelo visível => esconde verde
+}
+if(heroBtn && 'IntersectionObserver' in window){
+  new IntersectionObserver(updateSticky, { threshold: 0 }).observe(heroBtn);
+}
+window.addEventListener('scroll', updateSticky, { passive: true });
+window.addEventListener('resize', updateSticky);
+updateSticky();
 
 // --- Casas ---
 const casasEl = document.getElementById('casas');
