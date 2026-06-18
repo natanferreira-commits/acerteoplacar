@@ -191,7 +191,8 @@
   }
   .casa.sel{border-color:var(--green);background:rgba(0,227,107,.08)}
   .casa-info{display:flex;align-items:center;gap:12px}
-  .casa-logo{width:42px;height:42px;border-radius:10px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--yellow);font-size:14px}
+  .casa-logo{width:42px;height:42px;border-radius:10px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--yellow);font-size:14px;overflow:hidden;flex:0 0 auto}
+  .casa-logo img{width:100%;height:100%;object-fit:cover;display:block}
   .casa-name{font-weight:700;font-size:15px}
   .casa-name small{display:block;color:var(--muted);font-weight:500;font-size:11px;margin-top:1px}
   .casa-go{background:var(--green);color:#062b16;font-weight:800;font-size:12px;padding:8px 12px;border-radius:9px;text-transform:uppercase;white-space:nowrap}
@@ -471,9 +472,9 @@ const HAITI = {
 
 // Casas parceiras — links de afiliado do Rayo.
 const CASAS = [
-  { nome:"Esportiva", bonus:"Bônus de boas-vindas", sigla:"ESP", url:"https://go.aff.esportiva.bet/0u9rqmt2?utm_campaign=rayoboasvindas" },
-  { nome:"MGM", bonus:"Bônus de boas-vindas", sigla:"MGM", url:"https://ntrfr.betmgm.bet.br/redirect.aspx?pid=13348&bid=1480&lpid=15" },
-  { nome:"Superbet", bonus:"Bônus de boas-vindas", sigla:"SB", url:"https://wlsuperbet.adsrv.eacdn.com/C.ashx?btag=a_46116b_431c_&affid=869&siteid=46116&adid=431&c=" },
+  { nome:"Esportiva", bonus:"Bônus de boas-vindas", sigla:"ESP", logo:"img/esportiva.png", url:"https://go.aff.esportiva.bet/0u9rqmt2?utm_campaign=rayoboasvindas" },
+  { nome:"MGM", bonus:"Bônus de boas-vindas", sigla:"MGM", logo:"img/mgm.png", url:"https://ntrfr.betmgm.bet.br/redirect.aspx?pid=13348&bid=1480&lpid=15" },
+  { nome:"Superbet", bonus:"Bônus de boas-vindas", sigla:"SB", logo:"img/superbet.png", url:"https://wlsuperbet.adsrv.eacdn.com/C.ashx?btag=a_46116b_431c_&affid=869&siteid=46116&adid=431&c=" },
 ];
 
 // URL do Apps Script que grava os leads na planilha Google.
@@ -609,7 +610,7 @@ CASAS.forEach((c,i)=>{
   el.className='casa';
   el.innerHTML = `
     <div class="casa-info">
-      <div class="casa-logo">${c.sigla}</div>
+      <div class="casa-logo">${c.logo ? `<img src="${c.logo}" alt="${c.nome}">` : c.sigla}</div>
       <div><div class="casa-name">${c.nome}<small>${c.bonus}</small></div></div>
     </div>
     <span class="casa-go">Cadastrar →</span>`;
