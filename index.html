@@ -57,8 +57,8 @@
   .hero-cta{
     padding:18px 20px 6px;
     text-align:center;
-    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--bg) 16%);
-    margin-top:-60px;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--bg) 22%);
+    margin-top:-210px;
     position:relative;
     z-index:2;
   }
@@ -180,6 +180,8 @@
   /* seção 2 (cadastre/comprove) escondida até concluir etapa 1 */
   #vaga{display:none}
   #vaga.show{display:block}
+  .back-link{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;padding:0 0 14px;font-family:inherit}
+  .back-link:hover{color:var(--yellow)}
 
   /* ---------- CASAS ---------- */
   .casas{display:flex;flex-direction:column;gap:10px}
@@ -375,11 +377,12 @@
 
   <!-- ===== SEÇÃO 3: GARANTA A VAGA (casa + comprovação + dados) ===== -->
   <section id="vaga" style="display:none; background:linear-gradient(180deg, rgba(255,212,0,.03), transparent 30%)">
+    <button type="button" class="back-link" onclick="voltarPalpite()">← Voltar ao palpite</button>
     <div class="sec-tag">Garanta sua vaga</div>
     <h2 class="sec-title">Cadastre e <span class="y">comprove</span></h2>
     <p class="sec-sub">Para valer, seu palpite precisa de uma conta criada pelo nosso link. Escolha a casa, cadastre-se e envie o print do e-mail de boas-vindas.</p>
 
-    <div class="callout">⚠️ <b>Só vale com cadastro novo pelo link abaixo.</b> Sem o print do e-mail de boas-vindas o palpite não entra no sorteio do prêmio.</div>
+    <div class="callout">⚠️ <b>É só fazer o cadastro — não precisa depositar nem apostar nada.</b> Pra concorrer, basta criar uma conta nova pelo link abaixo e enviar o print do e-mail de boas-vindas. Simples assim.</div>
 
     <!-- Casas (links de afiliado do Rayo) -->
     <div class="casas" id="casas"></div>
@@ -466,11 +469,11 @@ const HAITI = {
   "Goleiros":["Johny Placide","Alexandre Pierre","Josué Duverger"]
 };
 
-// Casas parceiras — TROCAR pelos links de afiliado REAIS do Rayo.
+// Casas parceiras — links de afiliado do Rayo.
 const CASAS = [
-  { nome:"Casa 1", bonus:"Bônus de boas-vindas", sigla:"C1", url:"#" },
-  { nome:"Casa 2", bonus:"Bônus de boas-vindas", sigla:"C2", url:"#" },
-  { nome:"Casa 3", bonus:"Bônus de boas-vindas", sigla:"C3", url:"#" },
+  { nome:"Esportiva", bonus:"Bônus de boas-vindas", sigla:"ESP", url:"https://go.aff.esportiva.bet/0u9rqmt2?utm_campaign=rayoboasvindas" },
+  { nome:"MGM", bonus:"Bônus de boas-vindas", sigla:"MGM", url:"https://ntrfr.betmgm.bet.br/redirect.aspx?pid=13348&bid=1480&lpid=15" },
+  { nome:"Superbet", bonus:"Bônus de boas-vindas", sigla:"SB", url:"https://wlsuperbet.adsrv.eacdn.com/C.ashx?btag=a_46116b_431c_&affid=869&siteid=46116&adid=431&c=" },
 ];
 
 // URL do Apps Script que grava os leads na planilha Google.
@@ -553,7 +556,10 @@ function filterPlayers(){
   ['accBR','accHT'].forEach(id=>document.getElementById(id).classList.toggle('open', !!q));
 }
 
-// --- Concluir 1ª etapa: revela a seção "Cadastre e comprove" ---
+// --- Paginação: página 1 (palpite) -> página 2 (cadastro) ---
+// elementos que compõem a "página 1" (somem ao avançar pro cadastro)
+const PAGE1 = '.hero, .hero-cta, .steps, #palpite, #regras, footer';
+
 function finishStep1(){
   let scorerName = scorer;
   if(scorer==='__OTHER__') scorerName = document.getElementById('otherName').value.trim();
@@ -562,9 +568,18 @@ function finishStep1(){
     document.getElementById('palpite').scrollIntoView();
     return;
   }
-  const vaga = document.getElementById('vaga');
-  vaga.style.display = 'block';
-  vaga.scrollIntoView({behavior:'smooth'});
+  // vai pra "página 2": esconde a página 1 inteira e mostra só o cadastro
+  document.querySelectorAll(PAGE1).forEach(e=>e.style.display='none');
+  document.getElementById('sticky').style.display='none';
+  document.getElementById('vaga').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function voltarPalpite(){
+  document.getElementById('vaga').style.display='none';
+  document.querySelectorAll(PAGE1).forEach(e=>e.style.display='');
+  document.getElementById('sticky').style.display='';
+  document.getElementById('palpite').scrollIntoView();
 }
 
 // --- Casas ---
