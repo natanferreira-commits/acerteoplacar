@@ -434,7 +434,13 @@
     <h2>Palpite <span class="y">registrado!</span></h2>
     <p style="color:var(--muted);font-size:14px">Boa sorte! Se você cravar, a gente chama no seu WhatsApp.</p>
     <div class="summary" id="confirmSummary"></div>
-    <p style="color:var(--muted);font-size:12px">Guarde o print do e-mail de boas-vindas — pode ser pedido na conferência.</p>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:24px">Guarde o print do e-mail de boas-vindas — pode ser pedido na conferência.</p>
+
+    <div id="confirmMore" style="text-align:left">
+      <div class="callout" style="margin-bottom:14px">💰 <b>Multiplique suas chances!</b> Cada casa em que você se cadastrar vale um <b>novo palpite</b> concorrendo aos R$500. Cadastre-se em outra casa e jogue de novo.</div>
+      <div id="confirmCasas" class="casas" style="margin-bottom:18px"></div>
+    </div>
+    <button class="btn btn-primary" onclick="novoPalpite()">Fazer outro palpite →</button>
   </div>
 
   <!-- ===== FOOTER ===== -->
@@ -489,6 +495,7 @@ let scorer = null;
 let casaSel = null;
 let fileSel = null;
 let currentPage = 1;
+let casasUsadas = new Set();
 
 // --- Placar ---
 function bump(t, d){
@@ -703,16 +710,66 @@ async function submitPalpite(){
     console.log('MODO DEMO — SCRIPT_URL vazio. Payload:', payload);
   }
 
-  // Tela de confirmação
+  // registra a casa usada e monta a confirmação
+  casasUsadas.add(casaSel);
   const s = document.getElementById('confirmSummary');
   s.innerHTML = `
     <div><span>Placar</span><b>Brasil ${placar.BR} x ${placar.HT} Haiti</b></div>
     <div><span>1º a marcar</span><b>${scorerName}</b></div>
     <div><span>Casa</span><b>${casaSel}</b></div>`;
+  renderConfirmCasas();
   document.querySelectorAll('.shell > section, .hero, .hero-cta, .steps, footer, .faq').forEach(e=>e.style.display='none');
   document.getElementById('confirm').classList.add('show');
   document.getElementById('sticky').style.display='none';
   window.scrollTo(0,0);
+}
+
+// monta os cards das casas que o usuário AINDA não usou (pra estimular novo cadastro)
+function renderConfirmCasas(){
+  const restantes = CASAS.filter(c=>!casasUsadas.has(c.nome));
+  const more = document.getElementById('confirmMore');
+  const el = document.getElementById('confirmCasas');
+  el.innerHTML = '';
+  if(restantes.length === 0){ more.style.display = 'none'; return; }
+  more.style.display = 'block';
+  restantes.forEach(c=>{
+    const d = document.createElement('div');
+    d.className = 'casa';
+    d.innerHTML = `
+      <div class="casa-info">
+        <div class="casa-logo">${c.logo ? `<img src="${c.logo}" alt="${c.nome}">` : c.sigla}</div>
+        <div><div class="casa-name">${c.nome}<small>${c.bonus}</small></div></div>
+      </div>
+      <span class="casa-go">Cadastrar →</span>`;
+    d.onclick = ()=>{ if(c.url && c.url!=='#') window.open(c.url,'_blank'); };
+    el.appendChild(d);
+  });
+}
+
+// reseta o formulário e volta pra página 1 pra um novo palpite (mantém nome/WhatsApp)
+function novoPalpite(){
+  placar = { BR:0, HT:0 };
+  document.getElementById('ledBR').textContent = '0';
+  document.getElementById('ledHT').textContent = '0';
+  scorer = null; clearChips();
+  document.getElementById('otherBox').classList.remove('show');
+  document.getElementById('otherName').value = '';
+  document.getElementById('search').value = ''; filterPlayers();
+  setPick('Nenhum jogador escolhido ainda');
+  casaSel = null; document.querySelectorAll('#casas .casa').forEach(x=>x.classList.remove('sel'));
+  fileSel = null;
+  document.getElementById('file').value = '';
+  document.getElementById('uploadBox').classList.remove('has');
+  document.getElementById('uploadTxt').innerHTML = '<b>Toque para enviar</b><br>JPG, PNG ou PDF (até 5MB)';
+  document.getElementById('aceite').checked = false;
+  const btn = document.getElementById('submitBtn'); btn.disabled = false; btn.textContent = 'Enviar meu palpite';
+  // volta pra página 1
+  document.getElementById('confirm').classList.remove('show');
+  document.querySelectorAll(PAGE1).forEach(e=>e.style.display='');
+  document.getElementById('vaga').style.display = 'none';
+  currentPage = 1;
+  window.scrollTo(0,0);
+  updateSticky();
 }
 </script>
 </body>
