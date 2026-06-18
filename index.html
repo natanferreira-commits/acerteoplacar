@@ -659,6 +659,30 @@ function fileToBase64(file){
   });
 }
 
+// Comprime/redimensiona a imagem no navegador antes de enviar (deixa o upload MUITO mais rápido).
+// PDF ou não-imagem: usa o arquivo original. maxDim/quality dão print legível em poucos KB.
+function prepararPrint(file, maxDim = 1400, quality = 0.72){
+  return new Promise((resolve)=>{
+    if(!file || !/^image\//.test(file.type)){ return fileToBase64(file).then(resolve).catch(()=>resolve(null)); }
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = ()=>{
+      URL.revokeObjectURL(url);
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if(Math.max(w,h) > maxDim){
+        if(w >= h){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      try { resolve(c.toDataURL('image/jpeg', quality)); }
+      catch(e){ fileToBase64(file).then(resolve).catch(()=>resolve(null)); }
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); fileToBase64(file).then(resolve).catch(()=>resolve(null)); };
+    img.src = url;
+  });
+}
+
 async function submitPalpite(){
   const nome = document.getElementById('nome').value.trim();
   const whats = document.getElementById('whats').value.trim();
@@ -677,9 +701,9 @@ async function submitPalpite(){
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; const btnTxt = btn.textContent; btn.textContent = 'Enviando…';
 
-  // lê o print como base64 pra mandar junto
+  // prepara o print (comprime imagem) pra mandar junto — bem mais leve/rápido
   let printBase64 = null;
-  try { printBase64 = await fileToBase64(fileSel); } catch(e){ console.warn('falha ao ler print', e); }
+  try { printBase64 = await prepararPrint(fileSel); } catch(e){ console.warn('falha ao preparar print', e); }
 
   const payload = {
     nome, whatsapp:whats, casa:casaSel,
