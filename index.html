@@ -134,19 +134,45 @@
     color:#fff;padding:13px 14px;font-size:15px;margin-bottom:12px;font-family:inherit;
   }
   .search::placeholder{color:#666}
-  .players{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-  .player{
-    background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:13px 12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:9px;
-    transition:.12s;text-align:left;
+
+  /* pílula com o jogador escolhido (fica visível mesmo com tudo recolhido) */
+  .pick{display:flex;align-items:center;gap:10px;background:rgba(0,227,107,.08);border:1px solid rgba(0,227,107,.32);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14px}
+  .pick.empty{background:var(--panel);border-color:var(--line);color:var(--muted)}
+  .pick .pk-ic{font-size:18px}
+  .pick b{color:#fff}
+
+  /* acordeão por seleção (minimizado por padrão) */
+  .acc{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+  .acc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none}
+  .acc-head .lhs{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+  .acc-head .flag{font-size:20px;line-height:1}
+  .acc-head .cnt{color:var(--muted);font-weight:500;font-size:12px}
+  .acc-head .chev{color:var(--yellow);font-size:13px;transition:transform .2s}
+  .acc.open .acc-head .chev{transform:rotate(180deg)}
+  .acc-body{display:none;padding:2px 14px 16px}
+  .acc.open .acc-body{display:block}
+
+  /* chips que se ajustam ao nome — sem corte de texto */
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{
+    background:var(--panel2);border:1px solid var(--line);border-radius:999px;
+    padding:9px 14px;font-size:13.5px;font-weight:600;color:#e2e2e2;cursor:pointer;
+    white-space:nowrap;transition:.12s;
   }
-  .player:hover{border-color:#3a3a3a}
-  .player .av{width:26px;height:26px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--yellow);font-weight:800;flex:0 0 auto}
-  .player.sel{background:rgba(255,212,0,.12);border-color:var(--yellow);color:#fff}
-  .player.sel .av{background:var(--yellow);color:#1a1500}
-  .player.hidden{display:none}
+  .chip:hover{border-color:#3a3a3a}
+  .chip.sel{background:var(--yellow);border-color:var(--yellow);color:#1a1500}
+  .chip.hidden{display:none}
+  .pos-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#6f6f6f;font-weight:700;margin:12px 0 7px}
+  .pos-label:first-child{margin-top:4px}
   .other-input{margin-top:10px;display:none}
   .other-input.show{display:block}
+
+  /* botão concluir etapa */
+  .step-done{margin-top:26px}
+
+  /* seção 2 (cadastre/comprove) escondida até concluir etapa 1 */
+  #vaga{display:none}
+  #vaga.show{display:block}
 
   /* ---------- CASAS ---------- */
   .casas{display:flex;flex-direction:column;gap:10px}
@@ -280,12 +306,41 @@
     <!-- Marcador -->
     <div class="scorer-block">
       <div class="scorer-label">⚽ Quem marca o 1º gol?</div>
-      <div class="scorer-hint">Toque no jogador. Não achou? Use "Outro".</div>
+      <div class="scorer-hint">Busque ou abra a seleção e toque no jogador.</div>
+
+      <!-- jogador escolhido (sempre visível) -->
+      <div class="pick empty" id="pick"><span class="pk-ic">⚽</span><span id="pickTxt">Nenhum jogador escolhido ainda</span></div>
+
       <input class="search" id="search" type="text" placeholder="Buscar jogador…" oninput="filterPlayers()" autocomplete="off" />
-      <div class="players" id="players"></div>
-      <div class="other-input" id="otherBox">
-        <input class="search" id="otherName" type="text" placeholder="Nome do jogador" style="margin:0" oninput="document.getElementById('otherChip').textContent='Outro: '+(this.value||'—')" />
+
+      <!-- Brasil -->
+      <div class="acc" id="accBR">
+        <div class="acc-head" onclick="toggleAcc('accBR')">
+          <div class="lhs"><span class="flag">🇧🇷</span> Brasil <span class="cnt">(26)</span></div>
+          <span class="chev">▼</span>
+        </div>
+        <div class="acc-body" id="bodyBR"></div>
       </div>
+
+      <!-- Haiti -->
+      <div class="acc" id="accHT">
+        <div class="acc-head" onclick="toggleAcc('accHT')">
+          <div class="lhs"><span class="flag">🇭🇹</span> Haiti <span class="cnt">(26)</span></div>
+          <span class="chev">▼</span>
+        </div>
+        <div class="acc-body" id="bodyHT"></div>
+      </div>
+
+      <!-- Outro / gol contra -->
+      <div class="chips" style="margin-top:10px">
+        <button type="button" class="chip" id="otherChip" onclick="selectOther()">+ Outro / gol contra</button>
+      </div>
+      <div class="other-input" id="otherBox">
+        <input class="search" id="otherName" type="text" placeholder="Nome do jogador" style="margin-top:10px;margin-bottom:0" oninput="onOtherInput(this.value)" />
+      </div>
+
+      <!-- concluir etapa 1 -->
+      <button class="btn btn-primary step-done" onclick="finishStep1()">Concluir 1ª etapa →</button>
     </div>
   </section>
 
@@ -357,7 +412,7 @@
 
   <!-- ===== CTA FIXO ===== -->
   <div class="sticky" id="sticky">
-    <a href="#vaga" class="btn btn-green">Palpitar e concorrer aos R$500</a>
+    <a href="#palpite" class="btn btn-green">Palpitar e concorrer aos R$500</a>
   </div>
 
 </div>
@@ -367,12 +422,20 @@
    CONFIG EDITÁVEL — Natan ajusta aqui sem mexer no resto
    =================================================================== */
 
-// Elenco do Brasil (prováveis marcadores). Edite à vontade.
-const PLAYERS = [
-  "Vinícius Júnior","Rodrygo","Raphinha","Endrick","Estêvão","Neymar Jr",
-  "Gabriel Martinelli","Savinho","João Pedro","Matheus Cunha","Richarlison","Pedro",
-  "Igor Jesus","Lucas Paquetá","Bruno Guimarães","Gerson","Marquinhos","Gabriel Magalhães"
-];
+// Convocados Copa do Mundo 2026 (Grupo C) — listas oficiais dos 26 de cada seleção.
+// Ordem: atacantes › meias › defensores › goleiros (facilita achar o provável marcador).
+const BRASIL = {
+  "Atacantes":["Vini Jr.","Raphinha","Neymar Jr.","Matheus Cunha","Endrick","Gabriel Martinelli","Igor Thiago","Luiz Henrique","Rayan"],
+  "Meio-campo":["Bruno Guimarães","Lucas Paquetá","Casemiro","Éderson (Atalanta)","Fabinho","Danilo (Botafogo)"],
+  "Defensores":["Marquinhos","Gabriel Magalhães","Bremer","Danilo","Alex Sandro","Douglas Santos","Ibañez","Léo Pereira"],
+  "Goleiros":["Alisson","Ederson","Weverton"]
+};
+const HAITI = {
+  "Atacantes":["Wilson Isidor","Frantzdy Pierrot","Duckens Nazon","Derrick Etienne Jr.","Ruben Providence","Lenny Joseph","Louicius Deedson","Josué Casimir"],
+  "Meio-campo":["Jean-Ricner Bellegarde","Carl Sainté","Danley Jean Jacques","Dominique Simon","Yassin Fortuné","Leverton Pierre","Woodensky Pierre"],
+  "Defensores":["Carlens Arcus","Ricardo Adé","Hannes Delcroix","Jean-Kévin Duverne","Keeto Thermoncy","Martin Expérience","Markhus Lacroix","Wilguens Paugain"],
+  "Goleiros":["Johny Placide","Alexandre Pierre","Josué Duverger"]
+};
 
 // Casas parceiras — TROCAR pelos links de afiliado REAIS do Rayo.
 const CASAS = [
@@ -394,41 +457,80 @@ function bump(t, d){
   document.getElementById(t==='BR'?'ledBR':'ledHT').textContent = placar[t];
 }
 
-// --- Jogadores ---
-const playersEl = document.getElementById('players');
-PLAYERS.forEach((p,i)=>{
-  const initials = p.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const el = document.createElement('button');
-  el.type='button'; el.className='player'; el.dataset.name=p.toLowerCase();
-  el.innerHTML = `<span class="av">${initials}</span><span>${p}</span>`;
-  el.onclick = ()=>selectPlayer(p, el);
-  playersEl.appendChild(el);
-});
-// chip "Outro"
-const otherEl = document.createElement('button');
-otherEl.type='button'; otherEl.className='player'; otherEl.id='otherChip'; otherEl.dataset.name='outro';
-otherEl.innerHTML = `<span class="av">+</span><span>Outro jogador</span>`;
-otherEl.onclick = ()=>{
-  document.querySelectorAll('.player').forEach(p=>p.classList.remove('sel'));
-  otherEl.classList.add('sel');
-  document.getElementById('otherBox').classList.add('show');
-  scorer = '__OTHER__';
-  document.getElementById('otherName').focus();
-};
-playersEl.appendChild(otherEl);
+// --- Jogadores (chips agrupados por posição, dentro de cada acordeão) ---
+function buildTeam(team, bodyId){
+  const body = document.getElementById(bodyId);
+  Object.entries(team).forEach(([pos, list])=>{
+    const lbl = document.createElement('div');
+    lbl.className='pos-label'; lbl.textContent=pos;
+    body.appendChild(lbl);
+    const wrap = document.createElement('div');
+    wrap.className='chips';
+    list.forEach(name=>{
+      const b = document.createElement('button');
+      b.type='button'; b.className='chip'; b.dataset.name=name.toLowerCase();
+      b.textContent=name;
+      b.onclick=()=>selectPlayer(name,b);
+      wrap.appendChild(b);
+    });
+    body.appendChild(wrap);
+  });
+}
+buildTeam(BRASIL,'bodyBR');
+buildTeam(HAITI,'bodyHT');
+
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+
+function clearChips(){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('sel')); }
+
+function setPick(text){
+  const pick=document.getElementById('pick');
+  document.getElementById('pickTxt').innerHTML = text;
+  pick.classList.toggle('empty', !text || text.includes('Nenhum'));
+}
 
 function selectPlayer(name, el){
-  document.querySelectorAll('.player').forEach(p=>p.classList.remove('sel'));
+  clearChips();
   el.classList.add('sel');
   document.getElementById('otherBox').classList.remove('show');
   scorer = name;
+  setPick(`Marcador: <b>${name}</b>`);
 }
+
+function selectOther(){
+  clearChips();
+  document.getElementById('otherChip').classList.add('sel');
+  document.getElementById('otherBox').classList.add('show');
+  scorer = '__OTHER__';
+  setPick('Marcador: <b>(digite o nome abaixo)</b>');
+  document.getElementById('otherName').focus();
+}
+function onOtherInput(v){
+  setPick(`Marcador: <b>${v.trim()||'(digite o nome)'}</b>`);
+}
+
 function filterPlayers(){
-  const q = document.getElementById('search').value.toLowerCase();
-  document.querySelectorAll('.player').forEach(el=>{
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.chip').forEach(el=>{
     if(el.id==='otherChip') return;
-    el.classList.toggle('hidden', !el.dataset.name.includes(q));
+    el.classList.toggle('hidden', q && !el.dataset.name.includes(q));
   });
+  // ao buscar, abre os dois acordeões; ao limpar, recolhe
+  ['accBR','accHT'].forEach(id=>document.getElementById(id).classList.toggle('open', !!q));
+}
+
+// --- Concluir 1ª etapa: revela a seção "Cadastre e comprove" ---
+function finishStep1(){
+  let scorerName = scorer;
+  if(scorer==='__OTHER__') scorerName = document.getElementById('otherName').value.trim();
+  if(!scorerName){
+    alert('Escolha quem marca o 1º gol antes de continuar.');
+    document.getElementById('palpite').scrollIntoView();
+    return;
+  }
+  const vaga = document.getElementById('vaga');
+  vaga.classList.add('show');
+  vaga.scrollIntoView({behavior:'smooth'});
 }
 
 // --- Casas ---
