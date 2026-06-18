@@ -7,7 +7,7 @@ Campanha da **Arena / Dupla**.
 ## Arquivos
 
 - `index.html` — landing page autocontida (abre direto no navegador, sem build).
-- `placarcerto.png` — criativo de herói (story Brasil x Haiti).
+- `img/placarcerto.png` — criativo de herói (story Brasil x Haiti).
 - `PRD.md` — documento de produto (mecânica, fluxo, stack, decisões abertas).
 
 ## Como rodar
