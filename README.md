@@ -7,7 +7,7 @@ Campanha da **Arena / Dupla**.
 ## Arquivos
 
 - `index.html` — landing page autocontida (abre direto no navegador, sem build).
-- `img/placarcerto.png` — criativo de herói (story Brasil x Haiti).
+- `img/palacarar.webp` — criativo de herói (story Brasil x Haiti).
 - `apps-script/Code.gs` — back-end de uma linha (grava os leads na planilha Google).
 - `SETUP-PLANILHA.md` — passo a passo pra ligar a planilha.
 - `PRD.md` — documento de produto (mecânica, fluxo, stack, decisões abertas).
