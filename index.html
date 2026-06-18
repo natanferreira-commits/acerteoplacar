@@ -465,6 +465,11 @@ const CASAS = [
   { nome:"Casa 3", bonus:"Bônus de boas-vindas", sigla:"C3", url:"#" },
 ];
 
+// URL do Apps Script que grava os leads na planilha Google.
+// Cole aqui a URL do "deploy" do Web App (ver SETUP-PLANILHA.md). Enquanto for "",
+// o envio só mostra a confirmação (modo demo, não grava).
+const SCRIPT_URL = "";
+
 /* =================================================================== */
 
 let placar = { BR:0, HT:0 };
@@ -593,7 +598,17 @@ function maskPhone(el){
 }
 
 // --- Envio ---
-function submitPalpite(){
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    if(!file){ resolve(null); return; }
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result); // dataURL: "data:<mime>;base64,...."
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitPalpite(){
   const nome = document.getElementById('nome').value.trim();
   const whats = document.getElementById('whats').value.trim();
   const aceite = document.getElementById('aceite').checked;
@@ -608,31 +623,48 @@ function submitPalpite(){
   if(whats.replace(/\D/g,'').length<10){ alert('Preencha um WhatsApp válido.'); return; }
   if(!aceite){ alert('É preciso aceitar o regulamento e confirmar +18.'); return; }
 
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; const btnTxt = btn.textContent; btn.textContent = 'Enviando…';
+
+  // lê o print como base64 pra mandar junto
+  let printBase64 = null;
+  try { printBase64 = await fileToBase64(fileSel); } catch(e){ console.warn('falha ao ler print', e); }
+
   const payload = {
     nome, whatsapp:whats, casa:casaSel,
     placar:`${placar.BR} x ${placar.HT}`,
+    placar_br:placar.BR, placar_ht:placar.HT,
     primeiro_marcador:scorerName,
     arquivo:fileSel.name,
-    // ATENÇÃO: o timestamp que vale é o do SERVIDOR (decide o vencedor).
-    // Aqui é só ilustrativo. No back-end (Next route/Supabase) gravar created_at do servidor.
-    enviado_em_cliente:new Date().toLocaleString('pt-BR')
+    printBase64,                 // dataURL do print (servidor salva no Drive)
+    userAgent:navigator.userAgent
+    // OBS: o timestamp que VALE é gravado pelo servidor (Apps Script), não aqui.
   };
-  console.log('PALPITE (enviar ao back-end):', payload);
 
-  /* TODO BACK-END:
-     fetch('/api/palpite', { method:'POST', body: FormData(...) })
-     - gravar created_at no servidor
-     - subir o print pro storage (bucket)
-     - retornar ok
-  */
+  // envia pra planilha (Apps Script). Se SCRIPT_URL vazio, fica em modo demo.
+  if(SCRIPT_URL){
+    try{
+      await fetch(SCRIPT_URL, {
+        method:'POST',
+        mode:'no-cors',                  // evita preflight; resposta é opaca (ok pra nós)
+        body: JSON.stringify(payload)    // text/plain por padrão = requisição simples
+      });
+    }catch(e){
+      console.error('Erro ao enviar pra planilha:', e);
+      alert('Tivemos um problema ao registrar seu palpite. Tente de novo em instantes.');
+      btn.disabled = false; btn.textContent = btnTxt;
+      return;
+    }
+  } else {
+    console.log('MODO DEMO — SCRIPT_URL vazio. Payload:', payload);
+  }
 
   // Tela de confirmação
   const s = document.getElementById('confirmSummary');
   s.innerHTML = `
     <div><span>Placar</span><b>Brasil ${placar.BR} x ${placar.HT} Haiti</b></div>
     <div><span>1º a marcar</span><b>${scorerName}</b></div>
-    <div><span>Casa</span><b>${casaSel}</b></div>
-    <div><span>Enviado</span><b>${payload.enviado_em_cliente}</b></div>`;
+    <div><span>Casa</span><b>${casaSel}</b></div>`;
   document.querySelectorAll('.shell > section, .hero, .hero-cta, .steps, footer, .faq').forEach(e=>e.style.display='none');
   document.getElementById('confirm').classList.add('show');
   document.getElementById('sticky').style.display='none';

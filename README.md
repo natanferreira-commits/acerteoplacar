@@ -8,6 +8,8 @@ Campanha da **Arena / Dupla**.
 
 - `index.html` — landing page autocontida (abre direto no navegador, sem build).
 - `img/placarcerto.png` — criativo de herói (story Brasil x Haiti).
+- `apps-script/Code.gs` — back-end de uma linha (grava os leads na planilha Google).
+- `SETUP-PLANILHA.md` — passo a passo pra ligar a planilha.
 - `PRD.md` — documento de produto (mecânica, fluxo, stack, decisões abertas).
 
 ## Como rodar
@@ -17,8 +19,8 @@ Abra `index.html` no navegador. Não precisa de build nem servidor.
 ## Pendências (antes de ir ao ar)
 
 1. **Links de afiliado** das casas — editar o array `CASAS` no `<script>` do `index.html`.
-2. **Elenco do Brasil** — conferir o array `PLAYERS`.
-3. **Back-end** — o envio ainda é só front-end. Falta a rota que grava o `created_at` do **servidor** (decide o vencedor) e sobe o print pro storage. Stack alvo: Next 15 + Vercel + Supabase.
+2. **Elencos** — conferir os arrays `BRASIL` e `HAITI`.
+3. **Planilha de leads** — seguir o `SETUP-PLANILHA.md` e colar a URL em `SCRIPT_URL`. Sem isso, o envio fica em modo demo (não grava). O timestamp do vencedor é carimbado pelo servidor do Google.
 4. **Regra do 0x0** — definir no regulamento/FAQ.
 
 ## Regra do prêmio
